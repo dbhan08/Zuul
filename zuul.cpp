@@ -50,20 +50,23 @@ int currentRoom = 1;
 
  cout << "You scraped you're knee, you are now in the health office, but you want to go on an adventure!" << endl;
 cout << "Your commands are 'go'(move to a different room), 'help', 'get'(will put an item in your inventory), drop'(drops an item from your inventory), 'inv'(shows inventory), and 'quit'" << endl;
+    
+    
 
 // Main loop
+    
     while(playing) {
         
         printRoom(&rooms, &items,currentRoom );
         cin.get(inp, 20);
         cin.clear();
-        cin.ignore();
+        cin.ignore(10000000, '\n');
         
         if(strcmp("go",inp) == 0) {
             cout << "Where would you like to go?" << endl;
             cin.get(inp,20);
             cin.clear();
-            cin.ignore();
+            cin.ignore(10000000, '\n');
             if(move(&rooms, currentRoom, inp) == 0) {
                 
                 cout << "There is no room in that direction." << endl;
@@ -81,7 +84,7 @@ cout << "Your commands are 'go'(move to a different room), 'help', 'get'(will pu
             cout << "What item would you like to get?" << endl;
             cin.get(inp,50);
             cin.clear();
-            cin.ignore();
+            cin.ignore(10000000, '\n');
             getItem(&rooms, &items, &inventory, currentRoom, inp);
             
         } else if(strcmp("drop", inp) == 0) {
@@ -89,7 +92,7 @@ cout << "Your commands are 'go'(move to a different room), 'help', 'get'(will pu
             cout << "What item would you like to drop?" << endl;
             cin.get(inp,20);
             cin.clear();
-            cin.ignore();
+            cin.ignore(1000000, '\n');
             dropItem(&rooms, &items, &inventory, currentRoom, inp);
             
             
@@ -105,14 +108,14 @@ cout << "Your commands are 'go'(move to a different room), 'help', 'get'(will pu
             
         }
         
-        
         if(currentRoom == 15) {
-            cout << "You died in Compton!" << endl;
+            cout << "YOU ARE IN IMMINENT DANGER, YOU ARE IN COMPTON!";
+            cout << "Oh wait, its to late. You died in Compton! game over" << endl;
             break;
             
         }
         
-        if(inventory.size() == 5 && currentRoom == 1) {
+         else if(inventory.size() == 5 && currentRoom == 1) {
             
             cout << "Congratulations, you got all 5 items and you got back to where you started! You win!" << endl;
             break;
@@ -334,27 +337,30 @@ for(i = items -> begin(); i != items -> end(); i++) {
 // Function that picsk up itesm
 
 void getItem(vector<Room*>* rooms, vector<item*>* items, vector<int>* inventory,int currentRoom, char obj[]) {
+   
 vector<item*>:: iterator i;
 vector<Room*>:: iterator j;
-for(j = rooms ->begin(); j != rooms -> end(); i++) {
+for(j = rooms ->begin(); j != rooms -> end(); j++) {
+  
 	if((*j) -> getId() == currentRoom) {
 		for(i = items -> begin(); i != items -> end(); i++) {
-			if((*i) -> roomid == (*j) -> getId() && (strcmp(obj, (*i)->name) == 0)) {
-				
+			if(((*i) -> roomid == (*j) -> getId()) && ((strcmp(obj, (*i)->name) == 0))) {
+                cout << "hello" << endl;
 			inventory -> push_back((*i) -> id);
 			(*i) -> roomid = 0;
 			cout << "Picked up" << (*i) -> name << endl;
+               
 			return;
 
-}
+            }
 			
 }
 	
 }
 
 }
-	cout << "Object not found" << endl;
-    return;
+    cout << "Object not found" << endl;
+    
 
 }
 
@@ -376,6 +382,7 @@ void dropItem(vector<Room*>* rooms, vector<item*>* items, vector<int>* inventory
                         (*i) -> roomid = currentRoom;
             
 						 a = inventory -> erase(a);
+                        break;
 					}
 			}
 
