@@ -1,3 +1,11 @@
+/* This program runs a zuul game
+ 
+ By: Deyvik Bhan
+ Date: 11/26/19
+ 
+ */
+
+
 #include <iostream>
 #include <cstring>
 #include <map>
@@ -5,6 +13,8 @@
 #include "room.h"
 
 using namespace std;
+
+// Struct for items
 
 struct item {
 	char* name;
@@ -14,15 +24,22 @@ struct item {
 
 };
 
-void setRooms(vector<Room*>* rooms);
-void setItems(vector<item*>* items);
-void printRoom(vector<Room*>* rooms, vector<item*>*, int currentroom);
-void getItem();
-void dropItem();
-int move();
+
+// Function prototpes for essenital functions
+void setRooms(vector<Room*>* rooms); // done
+void setItems(vector<item*>* items); // done
+void printRoom(vector<Room*>* rooms, vector<item*>* items, int currentRoom); // done
+void getItem(vector<Room*>* rooms, vector<item*>* items, vector<int>* inventory,int currentRoom, char obj[]);
+void dropItem(vector<Room*>* rooms, vector<item*>* items, vector<int>* inventory,int currentRoom, char obj[]);
+int move(vector<Room*>* rooms, int currentRoom, char dir[]);
+void printInventory(vector<item*>* items, vector<int> inventory);
 
 
 int main() {
+    
+// Below are important variables
+char inp[20];
+bool playing = true;
 vector<Room*> rooms;
 vector<item*> items;
 vector<int> inventory;
@@ -30,7 +47,78 @@ setRooms(&rooms);
 setItems(&items);
 int currentRoom = 1;
 
-cout << "You scraped you're knee
+
+ cout << "You scraped you're knee, you are now in the health office, but you want to go on an adventure!" << endl;
+cout << "Your commands are 'go'(move to a different room), 'help', 'get'(will put an item in your inventory), drop'(drops an item from your inventory), 'inv'(shows inventory), and 'quit'" << endl;
+
+// Main loop
+    while(playing) {
+        
+        printRoom(&rooms, &items,currentRoom );
+        cin.get(inp, 20);
+        cin.clear();
+        cin.ignore();
+        
+        if(strcmp("go",inp) == 0) {
+            cout << "Where would you like to go?" << endl;
+            cin.get(inp,20);
+            cin.clear();
+            cin.ignore();
+            if(move(&rooms, currentRoom, inp) == 0) {
+                
+                cout << "There is no room in that direction." << endl;
+                
+            } else {
+                currentRoom = move(&rooms, currentRoom, inp);
+                
+            }
+            
+            
+        } else if(strcmp("help", inp) == 0) {
+            cout << "Your commands are 'go'(move to a different room), 'help', 'get'(will put an item in your inventory), drop'(drops an item from your inventory), 'inv'(shows inventory), and 'quit'" << endl;
+            
+        } else if(strcmp("get", inp) == 0) {
+            cout << "What item would you like to get?" << endl;
+            cin.get(inp,50);
+            cin.clear();
+            cin.ignore();
+            getItem(&rooms, &items, &inventory, currentRoom, inp);
+            
+        } else if(strcmp("drop", inp) == 0) {
+            
+            cout << "What item would you like to drop?" << endl;
+            cin.get(inp,20);
+            cin.clear();
+            cin.ignore();
+            dropItem(&rooms, &items, &inventory, currentRoom, inp);
+            
+            
+        } else if(strcmp("inv", inp) == 0) {
+            cout << "Your inventory has: " << endl;
+            printInventory(&items, inventory);
+            
+            
+            
+        } else if(strcmp("quit", inp) == 0) {
+            cout << "Thanks for playing" << endl;
+            break;
+            
+        }
+        
+        
+        if(currentRoom == 15) {
+            cout << "You died in Compton!" << endl;
+            break;
+            
+        }
+        
+        if(inventory.size() == 5 && currentRoom == 1) {
+            
+            cout << "Congratulations, you got all 5 items and you got back to where you started! You win!" << endl;
+            break;
+        }
+        
+    }
 
 
 
@@ -38,7 +126,7 @@ cout << "You scraped you're knee
 }
 
 
-
+// Creates the rooms
 void setRooms(vector<Room*>* rooms) {
 char* west = (char*)("west");
 char* east = (char*)("east");
@@ -168,7 +256,7 @@ roomMap.clear();
 
 
 
-
+// Creates the items
 
 
 void setItems(vector<item*>* items) {
@@ -204,5 +292,146 @@ items -> back() -> name = tupac;
 items ->back() -> id = 5;
 items ->back() -> roomid = 12;
 
+
+}
+
+
+
+// Function that prints stuff in room
+
+void printRoom( vector<Room*>* rooms, vector<item*>* items, int currentRoom) {
+
+vector<item*>:: iterator i;
+vector<Room*>:: iterator j;
+
+map<int, char*>::const_iterator it;
+for(j = rooms -> begin(); j != rooms -> end(); j++) {
+	if(currentRoom == (*j) -> getId()) {
+		cout << (*j) -> getDescription() << endl;
+	// Got following portion from omar
+	 for (it = (*j) -> getExits() -> begin(); it != (*j) -> getExits() -> end(); it++) {//printing exits
+        cout << "Exits: " << endl;
+	cout << it -> second << " " << endl;
+        
+      }
+
+
+	}
+
+}
+
+for(i = items -> begin(); i != items -> end(); i++) {
+	if(currentRoom == (*i) -> roomid) {
+		cout << "Items in the room:" << endl;
+		cout << (*i) -> name << endl;
+
+	}
+}
+    return;
+
+}
+
+// Function that picsk up itesm
+
+void getItem(vector<Room*>* rooms, vector<item*>* items, vector<int>* inventory,int currentRoom, char obj[]) {
+vector<item*>:: iterator i;
+vector<Room*>:: iterator j;
+for(j = rooms ->begin(); j != rooms -> end(); i++) {
+	if((*j) -> getId() == currentRoom) {
+		for(i = items -> begin(); i != items -> end(); i++) {
+			if((*i) -> roomid == (*j) -> getId() && (strcmp(obj, (*i)->name) == 0)) {
+				
+			inventory -> push_back((*i) -> id);
+			(*i) -> roomid = 0;
+			cout << "Picked up" << (*i) -> name << endl;
+			return;
+
+}
+			
+}
+	
+}
+
+}
+	cout << "Object not found" << endl;
+    return;
+
+}
+
+
+// Function that drops items
+
+void dropItem(vector<Room*>* rooms, vector<item*>* items, vector<int>* inventory,int currentRoom, char obj[]) {
+	vector<Room*>:: iterator j;
+	vector<item*>:: iterator i;
+	vector<int>:: iterator a;
+
+	for(j = rooms -> begin(); j != rooms -> end(); j++) {
+		if((*j) -> getId() == currentRoom) {
+			for(i = items -> begin(); i != items -> end(); i++) {
+				if((*i) -> roomid == 0 && (strcmp((*i) -> name, obj)== 0)) {
+				for(a = inventory -> begin(); a != inventory -> end(); a++) {
+					if((*a) == (*i) -> id) {
+						cout << "Dropped: " << (*i) -> name << endl;
+                        (*i) -> roomid = currentRoom;
+            
+						 a = inventory -> erase(a);
+					}
+			}
+
+			} else  {
+				cout << "That item is not in your inventory" << endl;
+			}
+				
+		}
+		}
+
+
+	}
+    return;
+
+}
+
+// Function responsible for moving player
+int move(vector<Room*>* rooms, int currentRoom, char dir[]) {
+	int newRoom;
+	vector<Room*>:: iterator i;
+	for(i = rooms ->begin(); i != rooms ->end(); i++) {
+		if((*i) -> getId() == currentRoom) {
+			map<int,char*> exit = *(*i) -> getExits();
+			map<int,char*>::const_iterator a;
+			for(a = exit.begin(); a != exit.end(); a++) {
+				if(strcmp(a -> second, dir) == 0) {
+					int newRoom = a -> first;
+					return newRoom;
+			}
+			}
+	
+		}
+		
+		
+	}
+	
+	return 0;
+
+
+}
+
+
+// Function responsible for printing inventory
+void printInventory(vector<item*>* items, vector<int> inventory) {
+	vector<item*>:: iterator i;
+	vector<int>:: iterator j;
+	for(j = inventory.begin(); j != inventory.end(); j++) {
+		for(i = items -> begin(); i != items -> end(); i++) {
+			if((*i) -> id == *j) {
+
+			cout << (*i) -> name << endl;
+
+	}
+	}
+
+	}
+    return;
 
 }

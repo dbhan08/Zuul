@@ -1,3 +1,11 @@
+/*
+ Following code is the cpp file for the room class
+ By: Deyvik Bhan
+ Date: 11/26/19
+ 
+ 
+ */
+
 #include <iostream>
 #include <cstring>
 #include <vector>
@@ -5,7 +13,7 @@
 #include "room.h"
 
 using namespace std;
-
+// Following defines function that are part of the room class
 Room::Room(char* newDescription) {
 	description = newDescription;
 }
