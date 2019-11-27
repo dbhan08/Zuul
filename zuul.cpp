@@ -7,7 +7,7 @@
 using namespace std;
 
 struct item {
-	char name[20];
+	char* name;
 	int roomid;
 	int id;
 
@@ -23,9 +23,16 @@ int move();
 
 
 int main() {
+vector<Room*> rooms;
+vector<item*> items;
+vector<int> inventory;
+setRooms(&rooms);
+setItems(&items);
+int currentRoom = 1;
+
+cout << "You scraped you're knee
 
 
-cout << "Hello" << endl;
 
 
 }
@@ -156,5 +163,46 @@ roomMap.insert(pair<int,char*> (14, north));
 compton -> setExits(roomMap);
 rooms -> push_back(compton);
 roomMap.clear();
+
+}
+
+
+
+
+
+
+void setItems(vector<item*>* items) {
+char* band = (char*)("bandaid");
+char* calc = (char*)("calculator");
+char* ea = (char*)("eternal atake album");
+char* trash = (char*)("trash");
+char* tupac = (char*)("tupac's mixtape");
+
+
+items -> push_back(new item());
+items -> back() -> name = band;
+items -> back() -> id = 1; 
+items -> back() -> roomid = 1;
+
+items -> push_back(new item());
+items ->back() -> name = calc;
+items ->back() -> id = 2;
+items ->back() -> roomid = 3;
+
+items -> push_back(new item());
+items -> back() -> name = ea;
+items -> back() -> id = 3;
+items ->back() -> roomid = 6;
+
+items -> push_back(new item());
+items -> back() -> name = trash;
+items -> back() -> id = 4;
+items -> back() -> roomid = 10;
+
+items -> push_back(new item());
+items -> back() -> name = tupac;
+items ->back() -> id = 5;
+items ->back() -> roomid = 12;
+
 
 }
