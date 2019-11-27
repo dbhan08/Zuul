@@ -11,11 +11,11 @@ using namespace std;
 
 class Room {
 
-Room(char* newDescription);
 public:
+Room(char* newDescription);
 char* getDescription();
 map<int, char*>* getExits();
-void setExits(map<int, char*>);
+void setExits(map<int , char*>);
 void setId(int);
 int getId();
 private:
